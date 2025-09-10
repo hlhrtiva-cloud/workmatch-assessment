@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WorkMatch Assessment - Đánh giá Văn hóa Doanh nghiệp</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            opacity: 0.9;
+            font-size: 1.1em;
+        }
+        
+        .progress-bar {
+            height: 4px;
+            background: rgba(255,255,255,0.3);
+            position: relative;
+            margin-top: 20px;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: white;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        
+        .content {
+            padding: 40px 30px;
+        }
+        
+        .section {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+        
+        .section.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .section-title {
+            font-size: 1.8em;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        
+        .section-desc {
+            color: #666;
+            margin-bottom: 30px;
+        }
+        
+        .question {
+            margin-bottom: 25px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .question-text {
+            font-size: 1.1em;
+            margin-bottom: 15px;
+            color: #333;
+        }
+        
+        .likert-scale {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+        }
+        
+        .likert-option {
+            flex: 1;
+            text-align: center;
+        }
+        
+        .likert-option input[type="radio"] {
+            display: none;
+        }
+        
+        .likert-option label {
+            display: block;
+            padding: 10px;
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .likert-option input[type="radio"]:checked + label {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+            transform: scale(1.05);
+        }
+        
+        .likert-option label:hover {
+            border-color: #667eea;
+        }
+        
+        .sjt-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .sjt-option {
+            padding: 15px;
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .sjt-option:hover {
+            border-color: #667eea;
+        }
+        
+        .sjt-option input[type="radio"] {
+            margin-right: 10px;
+        }
+        
+        .sjt-option.selected {
+            background: #f0f4ff;
+            border-color: #667eea;
+        }
+        
+        .forced-choice {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .forced-descriptors {
+            display: grid;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .descriptor {
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            border: 2px solid transparent;
+            transition: all 0.3s;
+        }
+        
+        .descriptor.most {
+            border-color: #4caf50;
+            background: #e8f5e9;
+        }
+        
+        .descriptor.least {
+            border-color: #f44336;
+            background: #ffebee;
+        }
+        
+        .forced-controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        
+        .forced-controls select {
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 1em;
+        }
+        
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #e0e0e0;
+        }
+        
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 6px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-prev {
+            background: #e0e0e0;
+            color: #666;
+        }
+        
+        .btn-next, .btn-submit {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .results {
+            display: none;
+            padding: 40px;
+            text-align: center;
+        }
+        
+        .results.show {
+            display: block;
+        }
+        
+        .score-circle {
+            width: 150px;
+            height: 150px;
+            margin: 0 auto 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 3em;
+            font-weight: bold;
+        }
+        
+        .score-label {
+            font-size: 1.5em;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        
+        .score-details {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 30px;
+            text-align: left;
+        }
+        
+        .score-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .score-item:last-child {
+            border-bottom: none;
+        }
+        
+        .score-bar {
+            width: 100px;
+            height: 20px;
+            background: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .score-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            transition: width 1s ease;
+        }
+        
+        .start-screen {
+            text-align: center;
+            padding: 40px;
+        }
+        
+        .start-screen h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+        
+        .start-screen ul {
+            text-align: left;
+            max-width: 500px;
+            margin: 20px auto;
+        }
+        
+        .start-screen li {
+            margin: 10px 0;
+        }
+        
+        .timer {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            font-weight: bold;
+            color: #667eea;
+        }
+    </style>
+</head>
+<body>
+    <div class="timer" id="timer">00:00</div>
+    
+    <div class="container">
+        <div class="header">
+            <h1>WorkMatch Assessment</h1>
+            <p>Đánh giá sự phù hợp văn hóa doanh nghiệp</p>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress"></div>
+            </div>
+        </div>
+        
+        <div class="content">
+            <!-- Start Screen -->
+            <div class="section active" id="start-section">
+                <div class="start-screen">
+                    <h2>Chào mừng bạn đến với bài đánh giá WorkMatch!</h2>
+                    <p>Bài đánh giá này giúp chúng tôi hiểu rõ hơn về phong cách làm việc và giá trị của bạn.</p>
+                    
+                    <ul>
+                        <li>⏱️ Thời gian: 25-35 phút</li>
+                        <li>📝 3 phần với tổng cộng 66 câu hỏi</li>
+                        <li>🎯 Không có câu trả lời đúng/sai</li>
+                        <li>💡 Hãy trả lời trung thực theo suy nghĩ của bạn</li>
+                        <li>🔒 Thông tin của bạn được bảo mật tuyệt đối</li>
+                    </ul>
+                    
+                    <button class="btn btn-next" onclick="startAssessment()">Bắt đầu làm bài</button>
+                </div>
+            </div>
+            
+            <!-- Section A: Likert -->
+            <div class="section" id="section-a">
+                <h2 class="section-title">Phần A: Giá trị & Nguyên tắc làm việc</h2>
+                <p class="section-desc">Vui lòng cho biết mức độ đồng ý của bạn với mỗi phát biểu sau</p>
+                <div id="likert-questions"></div>
+            </div>
+            
+            <!-- Section B: SJT -->
+            <div class="section" id="section-b">
+                <h2 class="section-title">Phần B: Tình huống thực tế</h2>
+                <p class="section-desc">Hãy chọn cách xử lý phù hợp nhất với bạn trong mỗi tình huống</p>
+                <div id="sjt-questions"></div>
+            </div>
+            
+            <!-- Section C: Forced Choice -->
+            <div class="section" id="section-c">
+                <h2 class="section-title">Phần C: Phong cách làm việc</h2>
+                <p class="section-desc">Với mỗi nhóm mô tả, chọn 1 câu GIỐNG BẠN NHẤT và 1 câu ÍT GIỐNG BẠN NHẤT</p>
+                <div id="forced-questions"></div>
+            </div>
+            
+            <!-- Results -->
+            <div class="results" id="results">
+                <div class="score-circle" id="total-score">0</div>
+                <div class="score-label">Điểm phù hợp văn hóa</div>
+                <p id="score-message"></p>
+                
+                <div class="score-details">
+                    <h3>Chi tiết điểm số</h3>
+                    <div id="score-breakdown"></div>
+                </div>
+                
+                <button class="btn btn-next" onclick="downloadResults()">Tải xuống kết quả</button>
+            </div>
+            
+            <!-- Navigation -->
+            <div class="navigation" id="navigation" style="display: none;">
+                <button class="btn btn-prev" onclick="previousSection()" id="btn-prev">Quay lại</button>
+                <button class="btn btn-next" onclick="nextSection()" id="btn-next">Tiếp theo</button>
+                <button class="btn btn-submit" onclick="submitAssessment()" id="btn-submit" style="display: none;">Nộp bài</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // WorkMatch Data (từ JSON)
+        const assessmentData = {
+            meta: {
+                version: "WorkMatch v1.0",
+                language: "vi",
+                role_title: "Trưởng phòng Phát triển Cộng đồng"
+            },
+            likertQuestions: [
+                {id: "A01", text: "Khi team đã thống nhất phương án, tôi thực hiện theo dù có ý tưởng khác", cluster: "RespectConsensus", reverse: false},
+                {id: "A02", text: "Tôi thường tìm cách biến các hoạt động thường ngày thành cơ hội tạo giá trị mới", cluster: "CreateValue", reverse: false},
+                {id: "A03", text: "Tôi ưu tiên hỗ trợ đồng nghiệp ngay cả khi đang bận việc riêng", cluster: "OthersFirst", reverse: false},
+                // ... thêm các câu khác từ JSON
+            ],
+            sjtQuestions: [
+                {
+                    id: "B01",
+                    scenario: "Team bạn đang triển khai dự án quan trọng. Một thành viên liên tục chậm deadline, ảnh hưởng tiến độ chung.",
+                    options: [
+                        {label: "A", text: "Trao đổi riêng với người đó để hiểu rõ khó khăn và cùng tìm giải pháp hỗ trợ"},
+                        {label: "B", text: "Đề xuất họp team để công khai vấn đề và cùng nhau điều chỉnh kế hoạch"},
+                        {label: "C", text: "Tự làm thêm phần việc của họ để đảm bảo dự án hoàn thành đúng hạn"},
+                        {label: "D", text: "Báo cáo với quản lý để có biện pháp xử lý kịp thời"}
+                    ]
+                },
+                // ... thêm các tình huống khác
+            ],
+            forcedChoiceBlocks: [
+                {
+                    id: "C01",
+                    descriptors: [
+                        {label: "D", text: "Tôi quyết đoán và hướng đến kết quả nhanh chóng"},
+                        {label: "I", text: "Tôi thích thuyết phục và truyền cảm hứng cho người khác"},
+                        {label: "S", text: "Tôi ưu tiên sự ổn định và hài hòa trong team"},
+                        {label: "C", text: "Tôi cẩn thận phân tích trước khi hành động"}
+                    ]
+                },
+                // ... thêm các block khác
+            ]
+        };
+        
+        // State management
+        let currentSection = 'start';
+        let responses = {
+            likert: {},
+            sjt: {},
+            forced: {}
+        };
+        let startTime = null;
+        let timerInterval = null;
+        
+        // Initialize
+        function init() {
+            renderLikertQuestions();
+            renderSJTQuestions();
+            renderForcedChoiceQuestions();
+        }
+        
+        // Start assessment
+        function startAssessment() {
+            document.getElementById('start-section').classList.remove('active');
+            document.getElementById('section-a').classList.add('active');
+            document.getElementById('navigation').style.display = 'flex';
+            document.getElementById('btn-prev').disabled = true;
+            currentSection = 'a';
+            startTime = Date.now();
+            startTimer();
+            updateProgress();
+        }
+        
+        // Timer
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                const elapsed = Math.floor((Date.now() - startTime) / 1000);
+                const minutes = Math.floor(elapsed / 60);
+                const seconds = elapsed % 60;
+                document.getElementById('timer').textContent = 
+                    `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            }, 1000);
+        }
+        
+        // Render Likert questions
+        function renderLikertQuestions() {
+            const container = document.getElementById('likert-questions');
+            const questions = [
+                "Khi team đã thống nhất phương án, tôi thực hiện theo dù có ý tưởng khác",
+                "Tôi thường tìm cách biến các hoạt động thường ngày thành cơ hội tạo giá trị mới",
+                "Tôi ưu tiên hỗ trợ đồng nghiệp ngay cả khi đang bận việc riêng",
+                // Thêm 37 câu còn lại ở đây
+            ];
+            
+            questions.forEach((q, i) => {
+                const qDiv = document.createElement('div');
+                qDiv.className = 'question';
+                qDiv.innerHTML = `
+                    <div class="question-text">${i + 1}. ${q}</div>
+                    <div class="likert-scale">
+                        <div class="likert-option">
+                            <input type="radio" name="A${(i+1).toString().padStart(2, '0')}" value="1" id="A${(i+1).toString().padStart(2, '0')}_1">
+                            <label for="A${(i+1).toString().padStart(2, '0')}_1">1<br><small>Rất không<br>đồng ý</small></label>
+                        </div>
+                        <div class="likert-option">
+                            <input type="radio" name="A${(i+1).toString().padStart(2, '0')}" value="2" id="A${(i+1).toString().padStart(2, '0')}_2">
+                            <label for="A${(i+1).toString().padStart(2, '0')}_2">2<br><small>Không<br>đồng ý</small></label>
+                        </div>
+                        <div class="likert-option">
+                            <input type="radio" name="A${(i+1).toString().padStart(2, '0')}" value="3" id="A${(i+1).toString().padStart(2, '0')}_3">
+                            <label for="A${(i+1).toString().padStart(2, '0')}_3">3<br><small>Trung<br>lập</small></label>
+                        </div>
+                        <div class="likert-option">
+                            <input type="radio" name="A${(i+1).toString().padStart(2, '0')}" value="4" id="A${(i+1).toString().padStart(2, '0')}_4">
+                            <label for="A${(i+1).toString().padStart(2, '0')}_4">4<br><small>Đồng<br>ý</small></label>
+                        </div>
+                        <div class="likert-option">
+                            <input type="radio" name="A${(i+1).toString().padStart(2, '0')}" value="5" id="A${(i+1).toString().padStart(2, '0')}_5">
+                            <label for="A${(i+1).toString().padStart(2, '0')}_5">5<br><small>Rất<br>đồng ý</small></label>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(qDiv);
+            });
+        }
+        
+        // Render SJT questions
+        function renderSJTQuestions() {
+            const container = document.getElementById('sjt-questions');
+            // Simplified - add full questions from data
+            container.innerHTML = '<p>12 tình huống sẽ được hiển thị ở đây...</p>';
+        }
+        
+        // Render Forced Choice questions
+        function renderForcedChoiceQuestions() {
+            const container = document.getElementById('forced-questions');
+            // Simplified - add full questions from data
+            container.innerHTML = '<p>14 nhóm lựa chọn sẽ được hiển thị ở đây...</p>';
+        }
+        
+        // Navigation
+        function nextSection() {
+            const sections = ['a', 'b', 'c'];
+            const currentIndex = sections.indexOf(currentSection);
+            
+            if (currentIndex < sections.length - 1) {
+                document.getElementById(`section-${currentSection}`).classList.remove('active');
+                currentSection = sections[currentIndex + 1];
+                document.getElementById(`section-${currentSection}`).classList.add('active');
+                
+                document.getElementById('btn-prev').disabled = false;
+                
+                if (currentSection === 'c') {
+                    document.getElementById('btn-next').style.display = 'none';
+                    document.getElementById('btn-submit').style.display = 'block';
+                }
+            }
+            
+            updateProgress();
+        }
+        
+        function previousSection() {
+            const sections = ['a', 'b', 'c'];
+            const currentIndex = sections.indexOf(currentSection);
+            
+            if (currentIndex > 0) {
+                document.getElementById(`section-${currentSection}`).classList.remove('active');
+                currentSection = sections[currentIndex - 1];
+                document.getElementById(`section-${currentSection}`).classList.add('active');
+                
+                if (currentSection === 'a') {
+                    document.getElementById('btn-prev').disabled = true;
+                }
+                
+                document.getElementById('btn-next').style.display = 'block';
+                document.getElementById('btn-submit').style.display = 'none';
+            }
+            
+            updateProgress();
+        }
+        
+        // Update progress bar
+        function updateProgress() {
+            const progress = {
+                'start': 0,
+                'a': 33,
+                'b': 66,
+                'c': 100
+            };
+            document.getElementById('progress').style.width = progress[currentSection] + '%';
+        }
+        
+        // Submit assessment
+        function submitAssessment() {
+            clearInterval(timerInterval);
+            
+            // Collect all responses
+            collectResponses();
+            
+            // Calculate scores
+            const scores = calculateScores();
+            
+            // Show results
+            showResults(scores);
+        }
+        
+        function collectResponses() {
+            // Collect Likert responses
+            for (let i = 1; i <= 40; i++) {
+                const name = `A${i.toString().padStart(2, '0')}`;
+                const selected = document.querySelector(`input[name="${name}"]:checked`);
+                if (selected) {
+                    responses.likert[name] = parseInt(selected.value);
+                }
+            }
+            
+            // Collect SJT and Forced Choice responses
+            // ... implementation
+        }
+        
+        function calculateScores() {
+            // Simplified scoring logic
+            const totalQuestions = Object.keys(responses.likert).length;
+            const totalScore = Object.values(responses.likert).reduce((a, b) => a + b, 0);
+            const averageScore = Math.round((totalScore / (totalQuestions * 5)) * 100);
+            
+            return {
+                total: averageScore,
+                clusters: {
+                    'Tôn trọng đồng thuận': Math.random() * 100,
+                    'Sống kiểu Kiến tạo': Math.random() * 100,
+                    'Sống có tâm': Math.random() * 100,
+                    'Góc nhìn đa chiều': Math.random() * 100,
+                    'Cho là nhận': Math.random() * 100
+                }
+            };
+        }
+        
+        function showResults(scores) {
+            document.getElementById('section-c').classList.remove('active');
+            document.getElementById('navigation').style.display = 'none';
+            document.getElementById('results').classList.add('show');
+            
+            // Animate score
+            let currentScore = 0;
+            const targetScore = scores.total;
+            const increment = targetScore / 50;
+            const scoreInterval = setInterval(() => {
+                currentScore += increment;
+                if (currentScore >= targetScore) {
+                    currentScore = targetScore;
+                    clearInterval(scoreInterval);
+                }
+                document.getElementById('total-score').textContent = Math.round(currentScore);
+            }, 20);
+            
+            // Score message
+            let message = '';
+            if (scores.total >= 75) {
+                message = '🎉 Tuyệt vời! Bạn rất phù hợp với văn hóa của chúng tôi!';
+            } else if (scores.total >= 60) {
+                message = '👍 Tốt! Bạn có nhiều điểm phù hợp với văn hóa công ty.';
+            } else {
+                message = '💡 Cảm ơn bạn đã hoàn thành bài đánh giá.';
+            }
+            document.getElementById('score-message').textContent = message;
+            
+            // Score breakdown
+            const breakdown = document.getElementById('score-breakdown');
+            Object.entries(scores.clusters).forEach(([key, value]) => {
+                const item = document.createElement('div');
+                item.className = 'score-item';
+                item.innerHTML = `
+                    <span>${key}</span>
+                    <div class="score-bar">
+                        <div class="score-fill" style="width: ${value}%"></div>
+                    </div>
+                `;
+                breakdown.appendChild(item);
+            });
+        }
+        
+        function downloadResults() {
+            const results = {
+                timestamp: new Date().toISOString(),
+                duration: document.getElementById('timer').textContent,
+                responses: responses,
+                scores: calculateScores()
+            };
+            
+            const dataStr = JSON.stringify(results, null, 2);
+            const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+            
+            const exportFileDefaultName = `workmatch_results_${Date.now()}.json`;
+            
+            const linkElement = document.createElement('a');
+            linkElement.setAttribute('href', dataUri);
+            linkElement.setAttribute('download', exportFileDefaultName);
+            linkElement.click();
+        }
+        
+        // Initialize on load
+        window.onload = init;
