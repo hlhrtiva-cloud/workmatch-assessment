@@ -1,452 +1,128 @@
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WorkMatch Assessment - Đánh giá Văn hóa Doanh nghiệp</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
-        }
-        
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 16px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            overflow: hidden;
-        }
-        
-        .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 40px 30px;
-            text-align: center;
-        }
-        
-        .header h1 {
-            font-size: 2.5em;
-            margin-bottom: 10px;
-        }
-        
-        .header p {
-            opacity: 0.9;
-            font-size: 1.1em;
-        }
-        
-        .progress-bar {
-            height: 4px;
-            background: rgba(255,255,255,0.3);
-            position: relative;
-            margin-top: 20px;
-        }
-        
-        .progress-fill {
-            height: 100%;
-            background: white;
-            width: 0%;
-            transition: width 0.3s ease;
-        }
-        
-        .content {
-            padding: 40px 30px;
-        }
-        
-        .section {
-            display: none;
-            animation: fadeIn 0.5s;
-        }
-        
-        .section.active {
-            display: block;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .section-title {
-            font-size: 1.8em;
-            color: #667eea;
-            margin-bottom: 10px;
-        }
-        
-        .section-desc {
-            color: #666;
-            margin-bottom: 30px;
-        }
-        
-        .question {
-            margin-bottom: 25px;
-            padding: 20px;
-            background: #f8f9fa;
-            border-radius: 8px;
-            border-left: 4px solid #667eea;
-        }
-        
-        .question-text {
-            font-size: 1.1em;
-            margin-bottom: 15px;
-            color: #333;
-        }
-        
-        .likert-scale {
-            display: flex;
-            justify-content: space-between;
-            gap: 10px;
-        }
-        
-        .likert-option {
-            flex: 1;
-            text-align: center;
-        }
-        
-        .likert-option input[type="radio"] {
-            display: none;
-        }
-        
-        .likert-option label {
-            display: block;
-            padding: 10px;
-            background: white;
-            border: 2px solid #e0e0e0;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        
-        .likert-option input[type="radio"]:checked + label {
-            background: #667eea;
-            color: white;
-            border-color: #667eea;
-            transform: scale(1.05);
-        }
-        
-        .likert-option label:hover {
-            border-color: #667eea;
-        }
-        
-        .sjt-options {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-        
-        .sjt-option {
-            padding: 15px;
-            background: white;
-            border: 2px solid #e0e0e0;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        
-        .sjt-option:hover {
-            border-color: #667eea;
-        }
-        
-        .sjt-option input[type="radio"] {
-            margin-right: 10px;
-        }
-        
-        .sjt-option.selected {
-            background: #f0f4ff;
-            border-color: #667eea;
-        }
-        
-        .forced-choice {
-            background: white;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 20px;
-        }
-        
-        .forced-descriptors {
-            display: grid;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-        
-        .descriptor {
-            padding: 12px;
-            background: #f8f9fa;
-            border-radius: 6px;
-            border: 2px solid transparent;
-            transition: all 0.3s;
-        }
-        
-        .descriptor.most {
-            border-color: #4caf50;
-            background: #e8f5e9;
-        }
-        
-        .descriptor.least {
-            border-color: #f44336;
-            background: #ffebee;
-        }
-        
-        .forced-controls {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-        }
-        
-        .forced-controls select {
-            padding: 10px;
-            border: 2px solid #e0e0e0;
-            border-radius: 6px;
-            font-size: 1em;
-        }
-        
-        .navigation {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 40px;
-            padding-top: 20px;
-            border-top: 1px solid #e0e0e0;
-        }
-        
-        .btn {
-            padding: 12px 30px;
-            border: none;
-            border-radius: 6px;
-            font-size: 1.1em;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        
-        .btn-prev {
-            background: #e0e0e0;
-            color: #666;
-        }
-        
-        .btn-next, .btn-submit {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-        }
-        
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-        }
-        
-        .btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-        
-        .results {
-            display: none;
-            padding: 40px;
-            text-align: center;
-        }
-        
-        .results.show {
-            display: block;
-        }
-        
-        .score-circle {
-            width: 150px;
-            height: 150px;
-            margin: 0 auto 30px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 3em;
-            font-weight: bold;
-        }
-        
-        .score-label {
-            font-size: 1.5em;
-            color: #333;
-            margin-bottom: 20px;
-        }
-        
-        .score-details {
-            background: #f8f9fa;
-            border-radius: 8px;
-            padding: 20px;
-            margin-top: 30px;
-            text-align: left;
-        }
-        
-        .score-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 10px 0;
-            border-bottom: 1px solid #e0e0e0;
-        }
-        
-        .score-item:last-child {
-            border-bottom: none;
-        }
-        
-        .score-bar {
-            width: 100px;
-            height: 20px;
-            background: #e0e0e0;
-            border-radius: 10px;
-            overflow: hidden;
-        }
-        
-        .score-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #667eea, #764ba2);
-            transition: width 1s ease;
-        }
-        
-        .start-screen {
-            text-align: center;
-            padding: 40px;
-        }
-        
-        .start-screen h2 {
-            color: #667eea;
-            margin-bottom: 20px;
-        }
-        
-        .start-screen ul {
-            text-align: left;
-            max-width: 500px;
-            margin: 20px auto;
-        }
-        
-        .start-screen li {
-            margin: 10px 0;
-        }
-        
-        .timer {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: white;
-            padding: 10px 20px;
-            border-radius: 20px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            font-weight: bold;
-            color: #667eea;
-        }
-    </style>
-</head>
-<body>
-    <div class="timer" id="timer">00:00</div>
-    
-    <div class="container">
-        <div class="header">
-            <h1>WorkMatch Assessment</h1>
-            <p>Đánh giá sự phù hợp văn hóa doanh nghiệp</p>
-            <div class="progress-bar">
-                <div class="progress-fill" id="progress"></div>
-            </div>
-        </div>
-        
-        <div class="content">
-            <!-- Start Screen -->
-            <div class="section active" id="start-section">
-                <div class="start-screen">
-                    <h2>Chào mừng bạn đến với bài đánh giá WorkMatch!</h2>
-                    <p>Bài đánh giá này giúp chúng tôi hiểu rõ hơn về phong cách làm việc và giá trị của bạn.</p>
-                    
-                    <ul>
-                        <li>⏱️ Thời gian: 25-35 phút</li>
-                        <li>📝 3 phần với tổng cộng 66 câu hỏi</li>
-                        <li>🎯 Không có câu trả lời đúng/sai</li>
-                        <li>💡 Hãy trả lời trung thực theo suy nghĩ của bạn</li>
-                        <li>🔒 Thông tin của bạn được bảo mật tuyệt đối</li>
-                    </ul>
-                    
-                    <button class="btn btn-next" onclick="startAssessment()">Bắt đầu làm bài</button>
-                </div>
-            </div>
+],
             
-            <!-- Section A: Likert -->
-            <div class="section" id="section-a">
-                <h2 class="section-title">Phần A: Giá trị & Nguyên tắc làm việc</h2>
-                <p class="section-desc">Vui lòng cho biết mức độ đồng ý của bạn với mỗi phát biểu sau</p>
-                <div id="likert-questions"></div>
-            </div>
-            
-            <!-- Section B: SJT -->
-            <div class="section" id="section-b">
-                <h2 class="section-title">Phần B: Tình huống thực tế</h2>
-                <p class="section-desc">Hãy chọn cách xử lý phù hợp nhất với bạn trong mỗi tình huống</p>
-                <div id="sjt-questions"></div>
-            </div>
-            
-            <!-- Section C: Forced Choice -->
-            <div class="section" id="section-c">
-                <h2 class="section-title">Phần C: Phong cách làm việc</h2>
-                <p class="section-desc">Với mỗi nhóm mô tả, chọn 1 câu GIỐNG BẠN NHẤT và 1 câu ÍT GIỐNG BẠN NHẤT</p>
-                <div id="forced-questions"></div>
-            </div>
-            
-            <!-- Results -->
-            <div class="results" id="results">
-                <div class="score-circle" id="total-score">0</div>
-                <div class="score-label">Điểm phù hợp văn hóa</div>
-                <p id="score-message"></p>
-                
-                <div class="score-details">
-                    <h3>Chi tiết điểm số</h3>
-                    <div id="score-breakdown"></div>
-                </div>
-                
-                <button class="btn btn-next" onclick="downloadResults()">Tải xuống kết quả</button>
-            </div>
-            
-            <!-- Navigation -->
-            <div class="navigation" id="navigation" style="display: none;">
-                <button class="btn btn-prev" onclick="previousSection()" id="btn-prev">Quay lại</button>
-                <button class="btn btn-next" onclick="nextSection()" id="btn-next">Tiếp theo</button>
-                <button class="btn btn-submit" onclick="submitAssessment()" id="btn-submit" style="display: none;">Nộp bài</button>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        // WorkMatch Data (từ JSON)
-        const assessmentData = {
-            meta: {
-                version: "WorkMatch v1.0",
-                language: "vi",
-                role_title: "Trưởng phòng Phát triển Cộng đồng"
-            },
-            likertQuestions: [
-                {id: "A01", text: "Khi team đã thống nhất phương án, tôi thực hiện theo dù có ý tưởng khác", cluster: "RespectConsensus", reverse: false},
-                {id: "A02", text: "Tôi thường tìm cách biến các hoạt động thường ngày thành cơ hội tạo giá trị mới", cluster: "CreateValue", reverse: false},
-                {id: "A03", text: "Tôi ưu tiên hỗ trợ đồng nghiệp ngay cả khi đang bận việc riêng", cluster: "OthersFirst", reverse: false},
-                // ... thêm các câu khác từ JSON
-            ],
             sjtQuestions: [
                 {
                     id: "B01",
-                    scenario: "Team bạn đang triển khai dự án quan trọng. Một thành viên liên tục chậm deadline, ảnh hưởng tiến độ chung.",
+                    scenario: "Team bạn đang triển khai dự án quan trọng. Một thành viên liên tục chậm deadline, ảnh hưởng tiến độ chung. Bạn sẽ:",
                     options: [
-                        {label: "A", text: "Trao đổi riêng với người đó để hiểu rõ khó khăn và cùng tìm giải pháp hỗ trợ"},
-                        {label: "B", text: "Đề xuất họp team để công khai vấn đề và cùng nhau điều chỉnh kế hoạch"},
-                        {label: "C", text: "Tự làm thêm phần việc của họ để đảm bảo dự án hoàn thành đúng hạn"},
-                        {label: "D", text: "Báo cáo với quản lý để có biện pháp xử lý kịp thời"}
+                        {label: "A", text: "Trao đổi riêng với người đó để hiểu rõ khó khăn và cùng tìm giải pháp hỗ trợ", weights: {RespectConsensus: 1, CreateValue: 1, OthersFirst: 3, MultiPerspective: 2, GiveToReceive: 2}},
+                        {label: "B", text: "Đề xuất họp team để công khai vấn đề và cùng nhau điều chỉnh kế hoạch", weights: {RespectConsensus: 3, CreateValue: 1, OthersFirst: 1, MultiPerspective: 2, GiveToReceive: 0}},
+                        {label: "C", text: "Tự làm thêm phần việc của họ để đảm bảo dự án hoàn thành đúng hạn", weights: {RespectConsensus: 0, CreateValue: 2, OthersFirst: 2, MultiPerspective: 0, GiveToReceive: 1}},
+                        {label: "D", text: "Báo cáo với quản lý để có biện pháp xử lý kịp thời", weights: {RespectConsensus: 1, CreateValue: 1, OthersFirst: 0, MultiPerspective: 0, GiveToReceive: 0}}
                     ]
                 },
-                // ... thêm các tình huống khác
+                {
+                    id: "B02",
+                    scenario: "Khách hàng yêu cầu tính năng ngoài scope nhưng rất quan trọng cho thành công của họ. Bạn sẽ:",
+                    options: [
+                        {label: "A", text: "Từ chối lịch sự và giải thích rõ phạm vi dự án đã thỏa thuận", weights: {RespectConsensus: 2, CreateValue: 0, OthersFirst: 0, MultiPerspective: 0, GiveToReceive: 0}},
+                        {label: "B", text: "Đề xuất làm thêm tính năng với điều kiện điều chỉnh timeline và ngân sách", weights: {RespectConsensus: 1, CreateValue: 2, OthersFirst: 1, MultiPerspective: 1, GiveToReceive: 1}},
+                        {label: "C", text: "Tìm cách hỗ trợ trong khả năng để khách hàng thành công", weights: {RespectConsensus: 0, CreateValue: 3, OthersFirst: 3, MultiPerspective: 1, GiveToReceive: 2}},
+                        {label: "D", text: "Tham khảo ý kiến team và các bên liên quan trước khi quyết định", weights: {RespectConsensus: 3, CreateValue: 1, OthersFirst: 1, MultiPerspective: 3, GiveToReceive: 0}}
+                    ]
+                },
+                {
+                    id: "B03",
+                    scenario: "Bạn phát hiện quy trình hiện tại có nhiều bước thừa, làm chậm tiến độ. Bạn sẽ:",
+                    options: [
+                        {label: "A", text: "Tự điều chỉnh cách làm của mình để nhanh hơn", weights: {RespectConsensus: 0, CreateValue: 2, OthersFirst: 0, MultiPerspective: 0, GiveToReceive: 0}},
+                        {label: "B", text: "Viết proposal chi tiết về quy trình mới và trình lên cấp trên", weights: {RespectConsensus: 1, CreateValue: 3, OthersFirst: 1, MultiPerspective: 1, GiveToReceive: 1}},
+                        {label: "C", text: "Thảo luận với team để cùng thử nghiệm cách làm mới", weights: {RespectConsensus: 3, CreateValue: 2, OthersFirst: 2, MultiPerspective: 2, GiveToReceive: 1}},
+                        {label: "D", text: "Tiếp tục tuân thủ quy trình hiện tại để tránh rủi ro", weights: {RespectConsensus: 2, CreateValue: 0, OthersFirst: 0, MultiPerspective: 0, GiveToReceive: 0}}
+                    ]
+                },
+                {
+                    id: "B04",
+                    scenario: "Hai thành viên trong team có mâu thuẫn, ảnh hưởng không khí làm việc. Bạn sẽ:",
+                    options: [
+                        {label: "A", text: "Không can thiệp vì đó là chuyện riêng của họ", weights: {RespectConsensus: 0, CreateValue: 0, OthersFirst: 0, MultiPerspective: 0, GiveToReceive: 0}},
+                        {label: "B", text: "Tổ chức hoạt động team building để cải thiện mối quan hệ", weights: {RespectConsensus: 1, CreateValue: 1, OthersFirst: 2, MultiPerspective: 1, GiveToReceive: 1}},
+                        {label: "C", text: "Làm trung gian hòa giải, lắng nghe cả hai bên", weights: {RespectConsensus: 2, CreateValue: 1, OthersFirst: 3, MultiPerspective: 3, GiveToReceive: 1}},
+                        {label: "D", text: "Đề nghị họ trao đổi trực tiếp và tìm cách hợp tác", weights: {RespectConsensus: 1, CreateValue: 1, OthersFirst: 1, MultiPerspective: 2, GiveToReceive: 0}}
+                    ]
+                },
+                {
+                    id: "B05",
+                    scenario: "Bạn có ý tưởng đột phá nhưng trái ngược với hướng đi hiện tại của team. Bạn sẽ:",
+                    options: [
+                        {label: "A", text: "Giữ im lặng để không gây xáo trộn kế hoạch", weights: {RespectConsensus: 2, CreateValue: 0, OthersFirst: 1, MultiPerspective: 0, GiveToReceive: 0}},
+                        {label: "B", text: "Chia sẻ ngay trong cuộc họp team để mọi người cùng thảo luận", weights: {RespectConsensus: 1, CreateValue: 2, OthersFirst: 1, MultiPerspective: 3, GiveToReceive: 2}},
+                        {label: "C", text: "Thử nghiệm nhỏ trước khi đề xuất chính thức", weights: {RespectConsensus: 1, CreateValue: 3, OthersFirst: 0, MultiPerspective: 1, GiveToReceive: 0}},
+                        {label: "D", text: "Trao đổi riêng với quản lý trước khi công khai", weights: {RespectConsensus: 1, CreateValue: 1, OthersFirst: 0, MultiPerspective: 1, GiveToReceive: 0}}
+                    ]
+                },
+                {
+                    id: "B06",
+                    scenario: "Deadline dự án trùng với kế hoạch nghỉ phép đã lên từ trước. Bạn sẽ:",
+                    options: [
+                        {label: "A", text: "Hủy kế hoạch nghỉ để hoàn thành công việc", weights: {RespectConsensus: 2, CreateValue: 1, OthersFirst: 2, MultiPerspective: 0, GiveToReceive: 1}},
+                        {label: "B", text: "Giữ lịch nghỉ và nhờ đồng nghiệp hỗ trợ", weights: {RespectConsensus: 1, CreateValue: 0, OthersFirst: 0, MultiPerspective: 0, GiveToReceive: 0}},
+                        {label: "C", text: "Làm việc remote trong kỳ nghỉ để cân bằng cả hai", weights: {RespectConsensus: 1, CreateValue: 2, OthersFirst: 1, MultiPerspective: 2, GiveToReceive: 0}},
+                        {label: "D", text: "Đề xuất điều chỉnh timeline dự án hợp lý hơn", weights: {RespectConsensus: 2, CreateValue: 1, OthersFirst: 1, MultiPerspective: 3, GiveToReceive: 0}}
+                    ]
+                },
+                {
+                    id: "B07",
+                    scenario: "Bạn nhận được feedback tiêu cực về cách làm việc của mình. Bạn sẽ:",
+                    options: [
+                        {label: "A", text: "Giải thích lý do và bảo vệ quan điểm của mình", weights: {RespectConsensus: 0, CreateValue: 0, OthersFirst: 0, MultiPerspective: 0, GiveToReceive: 0}},
+                        {label: "B", text: "Lắng nghe, ghi nhận và xin thời gian suy nghĩ", weights: {RespectConsensus: 2, CreateValue: 1, OthersFirst: 1, MultiPerspective: 2, GiveToReceive: 1}},
+                        {label: "C", text: "Chấp nhận ngay và cam kết thay đổi", weights: {RespectConsensus: 1, CreateValue: 2, OthersFirst: 2, MultiPerspective: 1, GiveToReceive: 2}},
+                        {label: "D", text: "Tìm hiểu thêm ý kiến từ nhiều người khác", weights: {RespectConsensus: 1, CreateValue: 1, OthersFirst: 0, MultiPerspective: 3, GiveToReceive: 0}}
+                    ]
+                },
+                {
+                    id: "B08",
+                    scenario: "Team cần quyết định nhanh nhưng chưa có sự đồng thuận. Bạn sẽ:",
+                    options: [
+                        {label: "A", text: "Thúc đẩy bỏ phiếu để có quyết định nhanh", weights: {RespectConsensus: 2, CreateValue: 1, OthersFirst: 0, MultiPerspective: 1, GiveToReceive: 0}},
+                        {label: "B", text: "Đề xuất thử nghiệm nhiều phương án song song", weights: {RespectConsensus: 0, CreateValue: 3, OthersFirst: 1, MultiPerspective: 3, GiveToReceive: 0}},
+                        {label: "C", text: "Kiên nhẫn thảo luận đến khi đạt được thống nhất", weights: {RespectConsensus: 3, CreateValue: 0, OthersFirst: 1, MultiPerspective: 2, GiveToReceive: 0}},
+                        {label: "D", text: "Ủng hộ phương án của đa số để tiến độ không bị ảnh hưởng", weights: {RespectConsensus: 2, CreateValue: 1, OthersFirst: 1, MultiPerspective: 0, GiveToReceive: 0}}
+                    ]
+                },
+                {
+                    id: "B09",
+                    scenario: "Một thành viên mới gặp khó khăn trong việc hòa nhập. Bạn sẽ:",
+                    options: [
+                        {label: "A", text: "Chủ động làm buddy mentor dù chưa được phân công", weights: {RespectConsensus: 0, CreateValue: 1, OthersFirst: 3, MultiPerspective: 1, GiveToReceive: 3}},
+                        {label: "B", text: "Báo với HR để có chương trình onboarding tốt hơn", weights: {RespectConsensus: 1, CreateValue: 2, OthersFirst: 1, MultiPerspective: 1, GiveToReceive: 0}},
+                        {label: "C", text: "Để họ tự thích nghi theo thời gian", weights: {RespectConsensus: 0, CreateValue: 0, OthersFirst: 0, MultiPerspective: 0, GiveToReceive: 0}},
+                        {label: "D", text: "Rủ họ tham gia các hoạt động không chính thức", weights: {RespectConsensus: 1, CreateValue: 0, OthersFirst: 2, MultiPerspective: 0, GiveToReceive: 1}}
+                    ]
+                },
+                {
+                    id: "B10",
+                    scenario: "Dự án của bạn vượt budget nhưng mang lại giá trị lớn cho cộng đồng. Bạn sẽ:",
+                    options: [
+                        {label: "A", text: "Dừng ngay để tuân thủ ngân sách đã duyệt", weights: {RespectConsensus: 2, CreateValue: 0, OthersFirst: 0, MultiPerspective: 0, GiveToReceive: 0}},
+                        {label: "B", text: "Tìm cách tối ưu để tiếp tục trong ngân sách", weights: {RespectConsensus: 1, CreateValue: 2, OthersFirst: 1, MultiPerspective: 1, GiveToReceive: 0}},
+                        {label: "C", text: "Đề xuất tăng ngân sách với bằng chứng về giá trị tạo ra", weights: {RespectConsensus: 1, CreateValue: 3, OthersFirst: 2, MultiPerspective: 2, GiveToReceive: 0}},
+                        {label: "D", text: "Tự bỏ tiền túi để hoàn thành dự án", weights: {RespectConsensus: 0, CreateValue: 1, OthersFirst: 3, MultiPerspective: 0, GiveToReceive: 2}}
+                    ]
+                },
+                {
+                    id: "B11",
+                    scenario: "Bạn phát hiện lỗi trong báo cáo của đồng nghiệp trước khi trình lên cấp trên. Bạn sẽ:",
+                    options: [
+                        {label: "A", text: "Báo riêng với họ để kịp chỉnh sửa", weights: {RespectConsensus: 1, CreateValue: 1, OthersFirst: 3, MultiPerspective: 1, GiveToReceive: 1}},
+                        {label: "B", text: "Để yên vì không phải trách nhiệm của mình", weights: {RespectConsensus: 0, CreateValue: 0, OthersFirst: 0, MultiPerspective: 0, GiveToReceive: 0}},
+                        {label: "C", text: "Sửa giúp luôn rồi thông báo sau", weights: {RespectConsensus: 0, CreateValue: 2, OthersFirst: 2, MultiPerspective: 0, GiveToReceive: 2}},
+                        {label: "D", text: "Nêu ra trong cuộc họp để cả team rút kinh nghiệm", weights: {RespectConsensus: 2, CreateValue: 1, OthersFirst: 0, MultiPerspective: 1, GiveToReceive: 1}}
+                    ]
+                },
+                {
+                    id: "B12",
+                    scenario: "Team nhận được yêu cầu làm việc ngoài giờ thường xuyên. Bạn sẽ:",
+                    options: [
+                        {label: "A", text: "Chấp nhận vì công việc quan trọng", weights: {RespectConsensus: 2, CreateValue: 1, OthersFirst: 1, MultiPerspective: 0, GiveToReceive: 0}},
+                        {label: "B", text: "Đề xuất tuyển thêm người hoặc điều chỉnh khối lượng công việc", weights: {RespectConsensus: 1, CreateValue: 2, OthersFirst: 2, MultiPerspective: 2, GiveToReceive: 0}},
+                        {label: "C", text: "Từ chối và giữ vững ranh giới công việc - cuộc sống", weights: {RespectConsensus: 0, CreateValue: 0, OthersFirst: 0, MultiPerspective: 1, GiveToReceive: 0}},
+                        {label: "D", text: "Thảo luận với team để tìm cách làm việc hiệu quả hơn", weights: {RespectConsensus: 3, CreateValue: 3, OthersFirst: 1, MultiPerspective: 3, GiveToReceive: 1}}
+                    ]
+                }
             ],
+            
             forcedChoiceBlocks: [
                 {
                     id: "C01",
@@ -457,8 +133,144 @@
                         {label: "C", text: "Tôi cẩn thận phân tích trước khi hành động"}
                     ]
                 },
-                // ... thêm các block khác
-            ]
+                {
+                    id: "C02",
+                    descriptors: [
+                        {label: "D", text: "Tôi thích thử thách và cạnh tranh"},
+                        {label: "I", text: "Tôi dễ dàng kết nối và xây dựng mối quan hệ"},
+                        {label: "S", text: "Tôi kiên nhẫn lắng nghe và hỗ trợ người khác"},
+                        {label: "C", text: "Tôi tuân thủ quy trình và chuẩn mực"}
+                    ]
+                },
+                {
+                    id: "C03",
+                    descriptors: [
+                        {label: "D", text: "Tôi chủ động nắm quyền kiểm soát tình huống"},
+                        {label: "I", text: "Tôi lạc quan và lan tỏa năng lượng tích cực"},
+                        {label: "S", text: "Tôi làm việc đều đặn và đáng tin cậy"},
+                        {label: "C", text: "Tôi chú trọng độ chính xác và chi tiết"}
+                    ]
+                },
+                {
+                    id: "C04",
+                    descriptors: [
+                        {label: "D", text: "Tôi đưa ra quyết định nhanh dựa trên bản năng"},
+                        {label: "I", text: "Tôi thích brainstorm và chia sẻ ý tưởng"},
+                        {label: "S", text: "Tôi cân nhắc kỹ tác động đến mọi người"},
+                        {label: "C", text: "Tôi dựa vào dữ liệu và logic để quyết định"}
+                    ]
+                },
+                {
+                    id: "C05",
+                    descriptors: [
+                        {label: "D", text: "Tôi thẳng thắn và đi thẳng vào vấn đề"},
+                        {label: "I", text: "Tôi tạo không khí vui vẻ trong công việc"},
+                        {label: "S", text: "Tôi tránh xung đột và tìm kiếm đồng thuận"},
+                        {label: "C", text: "Tôi thận trọng và dự phòng rủi ro"}
+                    ]
+                },
+                {
+                    id: "C06",
+                    descriptors: [
+                        {label: "D", text: "Tôi thích làm việc độc lập và tự chủ"},
+                        {label: "I", text: "Tôi cần tương tác xã hội để có động lực"},
+                        {label: "S", text: "Tôi làm việc tốt trong môi trường ổn định"},
+                        {label: "C", text: "Tôi cần hướng dẫn rõ ràng để thực hiện"}
+                    ]
+                },
+                {
+                    id: "C07",
+                    descriptors: [
+                        {label: "D", text: "Tôi chấp nhận rủi ro để đạt mục tiêu lớn"},
+                        {label: "I", text: "Tôi linh hoạt và thích ứng nhanh"},
+                        {label: "S", text: "Tôi trung thành và gắn bó lâu dài"},
+                        {label: "C", text: "Tôi tuân thủ nguyên tắc và quy định"}
+                    ]
+                },
+                {
+                    id: "C08",
+                    descriptors: [
+                        {label: "D", text: "Tôi thúc đẩy thay đổi và đổi mới"},
+                        {label: "I", text: "Tôi động viên và công nhận người khác"},
+                        {label: "S", text: "Tôi duy trì truyền thống và giá trị cốt lõi"},
+                        {label: "C", text: "Tôi đảm bảo chất lượng và tiêu chuẩn"}
+                    ]
+                },
+                {
+                    id: "C09",
+                    descriptors: [
+                        {label: "D", text: "Tôi tập trung vào hiệu quả và năng suất"},
+                        {label: "I", text: "Tôi ưu tiên trải nghiệm và cảm xúc"},
+                        {label: "S", text: "Tôi quan tâm đến sự thoải mái của mọi người"},
+                        {label: "C", text: "Tôi chú trọng quy trình và phương pháp"}
+                    ]
+                },
+                {
+                    id: "C10",
+                    descriptors: [
+                        {label: "D", text: "Tôi đặt mục tiêu cao và thúc đẩy bản thân"},
+                        {label: "I", text: "Tôi tìm kiếm sự công nhận và đánh giá cao"},
+                        {label: "S", text: "Tôi hài lòng với đóng góp âm thầm"},
+                        {label: "C", text: "Tôi theo đuổi sự hoàn hảo trong công việc"}
+                    ]
+                },
+                {
+                    id: "C11",
+                    descriptors: [
+                        {label: "D", text: "Tôi giải quyết vấn đề trực tiếp và dứt khoát"},
+                        {label: "I", text: "Tôi tìm giải pháp sáng tạo và độc đáo"},
+                        {label: "S", text: "Tôi ưu tiên giải pháp bền vững lâu dài"},
+                        {label: "C", text: "Tôi phân tích kỹ mọi phương án khả thi"}
+                    ]
+                },
+                {
+                    id: "C12",
+                    descriptors: [
+                        {label: "D", text: "Tôi chịu trách nhiệm và gánh vác áp lực"},
+                        {label: "I", text: "Tôi tạo động lực qua tầm nhìn và câu chuyện"},
+                        {label: "S", text: "Tôi đảm bảo mọi người đều được lắng nghe"},
+                        {label: "C", text: "Tôi bảo vệ tiêu chuẩn và nguyên tắc"}
+                    ]
+                },
+                {
+                    id: "C13",
+                    descriptors: [
+                        {label: "D", text: "Tôi phản ứng nhanh trong tình huống khẩn cấp"},
+                        {label: "I", text: "Tôi biến khủng hoảng thành cơ hội"},
+                        {label: "S", text: "Tôi giữ bình tĩnh và ổn định tinh thần team"},
+                        {label: "C", text: "Tôi tuân thủ quy trình xử lý khủng hoảng"}
+                    ]
+                },
+                {
+                    id: "C14",
+                    descriptors: [
+                        {label: "D", text: "Tôi định hướng và dẫn dắt người khác"},
+                        {label: "I", text: "Tôi kết nối và tạo network hiệu quả"},
+                        {label: "S", text: "Tôi hỗ trợ và phát triển năng lực team"},
+                        {label: "C", text: "Tôi kiểm soát và đảm bảo tuân thủ"}
+                    ]
+                }
+            ],
+            
+            // Scoring configuration
+            scoring: {
+                clusters: {
+                    RespectConsensus: {items: ["A01", "A10", "A19", "A28", "A33", "A40"], weight: 0.10},
+                    CreateValue: {items: ["A02", "A11", "A20", "A29", "A34"], weight: 0.18},
+                    OthersFirst: {items: ["A03", "A12", "A21", "A30", "A35"], weight: 0.16},
+                    MultiPerspective: {items: ["A04", "A13", "A22", "A31", "A36"], weight: 0.10},
+                    GiveToReceive: {items: ["A05", "A14", "A23", "A32", "A37"], weight: 0.08},
+                    Transparency_OKRs: {items: ["A06", "A15", "A24", "A38"], weight: 0.16},
+                    FunAtWork: {items: ["A07", "A16", "A25"], weight: 0.04},
+                    WorkFromAnywhere: {items: ["A08", "A17", "A26"], weight: 0.04},
+                    ConstructiveDebate: {items: ["A09", "A18", "A27"], weight: 0.14}
+                },
+                criticalClusters: {
+                    CreateValue: 70,
+                    Transparency_OKRs: 65,
+                    OthersFirst: 65
+                }
+            }
         };
         
         // State management
@@ -504,38 +316,51 @@
         // Render Likert questions
         function renderLikertQuestions() {
             const container = document.getElementById('likert-questions');
-            const questions = [
-                "Khi team đã thống nhất phương án, tôi thực hiện theo dù có ý tưởng khác",
-                "Tôi thường tìm cách biến các hoạt động thường ngày thành cơ hội tạo giá trị mới",
-                "Tôi ưu tiên hỗ trợ đồng nghiệp ngay cả khi đang bận việc riêng",
-                // Thêm 37 câu còn lại ở đây
-            ];
+            container.innerHTML = '';
             
-            questions.forEach((q, i) => {
+            assessmentData.likertQuestions.forEach((q, index) => {
                 const qDiv = document.createElement('div');
                 qDiv.className = 'question';
                 qDiv.innerHTML = `
-                    <div class="question-text">${i + 1}. ${q}</div>
+                    <div class="question-text">
+                        <span class="question-number">${index + 1}</span>
+                        ${q.text}
+                    </div>
                     <div class="likert-scale">
                         <div class="likert-option">
-                            <input type="radio" name="A${(i+1).toString().padStart(2, '0')}" value="1" id="A${(i+1).toString().padStart(2, '0')}_1">
-                            <label for="A${(i+1).toString().padStart(2, '0')}_1">1<br><small>Rất không<br>đồng ý</small></label>
+                            <input type="radio" name="${q.id}" value="1" id="${q.id}_1">
+                            <label for="${q.id}_1">
+                                <strong>1</strong>
+                                <small>Rất không<br>đồng ý</small>
+                            </label>
                         </div>
                         <div class="likert-option">
-                            <input type="radio" name="A${(i+1).toString().padStart(2, '0')}" value="2" id="A${(i+1).toString().padStart(2, '0')}_2">
-                            <label for="A${(i+1).toString().padStart(2, '0')}_2">2<br><small>Không<br>đồng ý</small></label>
+                            <input type="radio" name="${q.id}" value="2" id="${q.id}_2">
+                            <label for="${q.id}_2">
+                                <strong>2</strong>
+                                <small>Không<br>đồng ý</small>
+                            </label>
                         </div>
                         <div class="likert-option">
-                            <input type="radio" name="A${(i+1).toString().padStart(2, '0')}" value="3" id="A${(i+1).toString().padStart(2, '0')}_3">
-                            <label for="A${(i+1).toString().padStart(2, '0')}_3">3<br><small>Trung<br>lập</small></label>
+                            <input type="radio" name="${q.id}" value="3" id="${q.id}_3">
+                            <label for="${q.id}_3">
+                                <strong>3</strong>
+                                <small>Trung<br>lập</small>
+                            </label>
                         </div>
                         <div class="likert-option">
-                            <input type="radio" name="A${(i+1).toString().padStart(2, '0')}" value="4" id="A${(i+1).toString().padStart(2, '0')}_4">
-                            <label for="A${(i+1).toString().padStart(2, '0')}_4">4<br><small>Đồng<br>ý</small></label>
+                            <input type="radio" name="${q.id}" value="4" id="${q.id}_4">
+                            <label for="${q.id}_4">
+                                <strong>4</strong>
+                                <small>Đồng<br>ý</small>
+                            </label>
                         </div>
                         <div class="likert-option">
-                            <input type="radio" name="A${(i+1).toString().padStart(2, '0')}" value="5" id="A${(i+1).toString().padStart(2, '0')}_5">
-                            <label for="A${(i+1).toString().padStart(2, '0')}_5">5<br><small>Rất<br>đồng ý</small></label>
+                            <input type="radio" name="${q.id}" value="5" id="${q.id}_5">
+                            <label for="${q.id}_5">
+                                <strong>5</strong>
+                                <small>Rất<br>đồng ý</small>
+                            </label>
                         </div>
                     </div>
                 `;
@@ -546,19 +371,119 @@
         // Render SJT questions
         function renderSJTQuestions() {
             const container = document.getElementById('sjt-questions');
-            // Simplified - add full questions from data
-            container.innerHTML = '<p>12 tình huống sẽ được hiển thị ở đây...</p>';
+            container.innerHTML = '';
+            
+            assessmentData.sjtQuestions.forEach((q, index) => {
+                const qDiv = document.createElement('div');
+                qDiv.className = 'question';
+                qDiv.innerHTML = `
+                    <div class="question-text">
+                        <span class="question-number">${index + 1}</span>
+                        <strong>Tình huống ${index + 1}:</strong>
+                    </div>
+                    <div class="sjt-scenario">${q.scenario}</div>
+                    <div class="sjt-options">
+                        ${q.options.map(opt => `
+                            <label class="sjt-option">
+                                <input type="radio" name="${q.id}" value="${opt.label}">
+                                <span class="sjt-option-label">${opt.label}.</span>
+                                ${opt.text}
+                            </label>
+                        `).join('')}
+                    </div>
+                `;
+                container.appendChild(qDiv);
+                
+                // Add click handler for visual feedback
+                qDiv.querySelectorAll('.sjt-option').forEach(option => {
+                    option.addEventListener('click', function() {
+                        qDiv.querySelectorAll('.sjt-option').forEach(o => o.classList.remove('selected'));
+                        this.classList.add('selected');
+                    });
+                });
+            });
         }
         
         // Render Forced Choice questions
         function renderForcedChoiceQuestions() {
             const container = document.getElementById('forced-questions');
-            // Simplified - add full questions from data
-            container.innerHTML = '<p>14 nhóm lựa chọn sẽ được hiển thị ở đây...</p>';
+            container.innerHTML = '';
+            
+            assessmentData.forcedChoiceBlocks.forEach((block, index) => {
+                const blockDiv = document.createElement('div');
+                blockDiv.className = 'forced-choice';
+                blockDiv.innerHTML = `
+                    <div class="question-text">
+                        <span class="question-number">${index + 1}</span>
+                        <strong>Nhóm ${index + 1}:</strong>
+                    </div>
+                    <div class="forced-descriptors">
+                        ${block.descriptors.map(desc => `
+                            <div class="descriptor" data-label="${desc.label}">
+                                <span class="descriptor-label">${desc.label}</span>
+                                <span class="descriptor-text">${desc.text}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                    <div class="forced-controls">
+                        <div class="control-group most">
+                            <label>🟢 Giống tôi nhất:</label>
+                            <select name="${block.id}_most" onchange="updateForcedChoice('${block.id}', 'most', this.value)">
+                                <option value="">Chọn một...</option>
+                                ${block.descriptors.map(desc => 
+                                    `<option value="${desc.label}">${desc.label}: ${desc.text.substring(0, 30)}...</option>`
+                                ).join('')}
+                            </select>
+                        </div>
+                        <div class="control-group least">
+                            <label>🔴 Ít giống tôi nhất:</label>
+                            <select name="${block.id}_least" onchange="updateForcedChoice('${block.id}', 'least', this.value)">
+                                <option value="">Chọn một...</option>
+                                ${block.descriptors.map(desc => 
+                                    `<option value="${desc.label}">${desc.label}: ${desc.text.substring(0, 30)}...</option>`
+                                ).join('')}
+                            </select>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(blockDiv);
+            });
+        }
+        
+        // Update forced choice visual feedback
+        function updateForcedChoice(blockId, type, value) {
+            const block = document.querySelector(`select[name="${blockId}_${type}"]`).closest('.forced-choice');
+            const descriptors = block.querySelectorAll('.descriptor');
+            
+            // Clear previous selection for this type
+            descriptors.forEach(desc => {
+                desc.classList.remove(type);
+            });
+            
+            // Add new selection
+            if (value) {
+                const selected = block.querySelector(`.descriptor[data-label="${value}"]`);
+                if (selected) {
+                    selected.classList.add(type);
+                }
+                
+                // Prevent selecting same option for both
+                const otherType = type === 'most' ? 'least' : 'most';
+                const otherSelect = block.querySelector(`select[name="${blockId}_${otherType}"]`);
+                if (otherSelect.value === value) {
+                    otherSelect.value = '';
+                    descriptors.forEach(desc => desc.classList.remove(otherType));
+                }
+            }
         }
         
         // Navigation
         function nextSection() {
+            if (!validateCurrentSection()) {
+                alert('Vui lòng hoàn thành tất cả câu hỏi trong phần này trước khi tiếp tục.');
+                return;
+            }
+            
             const sections = ['a', 'b', 'c'];
             const currentIndex = sections.indexOf(currentSection);
             
@@ -576,6 +501,7 @@
             }
             
             updateProgress();
+            window.scrollTo(0, 0);
         }
         
         function previousSection() {
@@ -596,6 +522,36 @@
             }
             
             updateProgress();
+            window.scrollTo(0, 0);
+        }
+        
+        // Validation
+        function validateCurrentSection() {
+            let isValid = true;
+            
+            if (currentSection === 'a') {
+                assessmentData.likertQuestions.forEach(q => {
+                    if (!document.querySelector(`input[name="${q.id}"]:checked`)) {
+                        isValid = false;
+                    }
+                });
+            } else if (currentSection === 'b') {
+                assessmentData.sjtQuestions.forEach(q => {
+                    if (!document.querySelector(`input[name="${q.id}"]:checked`)) {
+                        isValid = false;
+                    }
+                });
+            } else if (currentSection === 'c') {
+                assessmentData.forcedChoiceBlocks.forEach(block => {
+                    const most = document.querySelector(`select[name="${block.id}_most"]`).value;
+                    const least = document.querySelector(`select[name="${block.id}_least"]`).value;
+                    if (!most || !least) {
+                        isValid = false;
+                    }
+                });
+            }
+            
+            return isValid;
         }
         
         // Update progress bar
@@ -611,56 +567,128 @@
         
         // Submit assessment
         function submitAssessment() {
+            if (!validateCurrentSection()) {
+                alert('Vui lòng hoàn thành tất cả câu hỏi trước khi nộp bài.');
+                return;
+            }
+            
             clearInterval(timerInterval);
-            
-            // Collect all responses
             collectResponses();
-            
-            // Calculate scores
             const scores = calculateScores();
-            
-            // Show results
             showResults(scores);
         }
         
+        // Collect responses
         function collectResponses() {
             // Collect Likert responses
-            for (let i = 1; i <= 40; i++) {
-                const name = `A${i.toString().padStart(2, '0')}`;
-                const selected = document.querySelector(`input[name="${name}"]:checked`);
+            assessmentData.likertQuestions.forEach(q => {
+                const selected = document.querySelector(`input[name="${q.id}"]:checked`);
                 if (selected) {
-                    responses.likert[name] = parseInt(selected.value);
+                    responses.likert[q.id] = {
+                        value: parseInt(selected.value),
+                        cluster: q.cluster,
+                        reverse: q.reverse
+                    };
                 }
-            }
+            });
             
-            // Collect SJT and Forced Choice responses
-            // ... implementation
+            // Collect SJT responses
+            assessmentData.sjtQuestions.forEach(q => {
+                const selected = document.querySelector(`input[name="${q.id}"]:checked`);
+                if (selected) {
+                    const option = q.options.find(opt => opt.label === selected.value);
+                    responses.sjt[q.id] = {
+                        value: selected.value,
+                        weights: option.weights
+                    };
+                }
+            });
+            
+            // Collect Forced Choice responses
+            assessmentData.forcedChoiceBlocks.forEach(block => {
+                const most = document.querySelector(`select[name="${block.id}_most"]`).value;
+                const least = document.querySelector(`select[name="${block.id}_least"]`).value;
+                responses.forced[block.id] = {most, least};
+            });
         }
         
+        // Calculate scores
         function calculateScores() {
-            // Simplified scoring logic
-            const totalQuestions = Object.keys(responses.likert).length;
-            const totalScore = Object.values(responses.likert).reduce((a, b) => a + b, 0);
-            const averageScore = Math.round((totalScore / (totalQuestions * 5)) * 100);
+            const clusterScores = {};
+            const discScores = {D: 0, I: 0, S: 0, C: 0};
+            
+            // Initialize cluster scores
+            Object.keys(assessmentData.scoring.clusters).forEach(cluster => {
+                clusterScores[cluster] = {raw: 0, count: 0, normalized: 0};
+            });
+            
+            // Calculate Likert scores
+            Object.entries(responses.likert).forEach(([id, response]) => {
+                if (response.cluster === 'SD') return; // Skip validity check item
+                
+                let score = response.value;
+                if (response.reverse) {
+                    score = 6 - score; // Reverse scoring
+                }
+                
+                if (clusterScores[response.cluster]) {
+                    clusterScores[response.cluster].raw += score;
+                    clusterScores[response.cluster].count += 1;
+                }
+            });
+            
+            // Add SJT scores
+            Object.values(responses.sjt).forEach(response => {
+                Object.entries(response.weights).forEach(([cluster, weight]) => {
+                    if (clusterScores[cluster]) {
+                        clusterScores[cluster].raw += weight;
+                    }
+                });
+            });
+            
+            // Calculate DISC scores
+            Object.values(responses.forced).forEach(response => {
+                if (response.most) discScores[response.most] += 1;
+                if (response.least) discScores[response.least] -= 1;
+            });
+            
+            // Normalize cluster scores to 0-100
+            Object.keys(clusterScores).forEach(cluster => {
+                const score = clusterScores[cluster];
+                const maxPossible = (score.count * 5) + 36; // 36 is max SJT contribution
+                score.normalized = Math.round((score.raw / maxPossible) * 100);
+            });
+            
+            // Normalize DISC scores
+            const maxDisc = Math.max(...Object.values(discScores));
+            const minDisc = Math.min(...Object.values(discScores));
+            const rangeDisc = maxDisc - minDisc || 1;
+            
+            Object.keys(discScores).forEach(key => {
+                discScores[key] = Math.round(((discScores[key] - minDisc) / rangeDisc) * 100);
+            });
+            
+            // Calculate weighted total score
+            let totalScore = 0;
+            Object.entries(clusterScores).forEach(([cluster, score]) => {
+                const weight = assessmentData.scoring.clusters[cluster].weight;
+                totalScore += score.normalized * weight;
+            });
             
             return {
-                total: averageScore,
-                clusters: {
-                    'Tôn trọng đồng thuận': Math.random() * 100,
-                    'Sống kiểu Kiến tạo': Math.random() * 100,
-                    'Sống có tâm': Math.random() * 100,
-                    'Góc nhìn đa chiều': Math.random() * 100,
-                    'Cho là nhận': Math.random() * 100
-                }
+                total: Math.round(totalScore),
+                clusters: clusterScores,
+                disc: discScores
             };
         }
         
+        // Show results
         function showResults(scores) {
             document.getElementById('section-c').classList.remove('active');
             document.getElementById('navigation').style.display = 'none';
             document.getElementById('results').classList.add('show');
             
-            // Animate score
+            // Animate total score
             let currentScore = 0;
             const targetScore = scores.total;
             const increment = targetScore / 50;
@@ -675,48 +703,954 @@
             
             // Score message
             let message = '';
+            let color = '';
             if (scores.total >= 75) {
-                message = '🎉 Tuyệt vời! Bạn rất phù hợp với văn hóa của chúng tôi!';
+                message = '🎉 Xuất sắc! Bạn rất phù hợp với văn hóa của chúng tôi!';
+                color = '#28a745';
             } else if (scores.total >= 60) {
                 message = '👍 Tốt! Bạn có nhiều điểm phù hợp với văn hóa công ty.';
+                color = '#ffc107';
             } else {
-                message = '💡 Cảm ơn bạn đã hoàn thành bài đánh giá.';
+                message = '💡 Cảm ơn bạn đã hoàn thành bài đánh giá. Chúng tôi sẽ xem xét kỹ hồ sơ của bạn.';
+                color = '#dc3545';
             }
             document.getElementById('score-message').textContent = message;
+            document.getElementById('score-message').style.color = color;
             
-            // Score breakdown
-            const breakdown = document.getElementById('score-breakdown');
-            Object.entries(scores.clusters).forEach(([key, value]) => {
+            // Cluster scores
+            const clusterContainer = document.getElementById('cluster-scores');
+            clusterContainer.innerHTML = '';
+            
+            const clusterNames = {
+                RespectConsensus: 'Tôn trọng đồng thuận',
+                CreateValue: 'Sống kiểu Kiến tạo',
+                OthersFirst: 'Sống có tâm',
+                MultiPerspective: 'Góc nhìn đa chiều',
+                GiveToReceive: 'Cho là nhận',
+                Transparency_OKRs: 'Minh bạch & OKRs',
+                FunAtWork: 'Vui vẻ trong công việc',
+                WorkFromAnywhere: 'Làm việc linh hoạt',
+                ConstructiveDebate: 'Phản biện xây dựng'
+            };
+            
+            Object.entries(scores.clusters).forEach(([cluster, score]) => {
+                const isCritical = assessmentData.scoring.criticalClusters[cluster];
+                const meetsThreshold = !isCritical || score.normalized >= isCritical;
+                
                 const item = document.createElement('div');
-                item.className = 'score-item';
+                item.className = 'cluster-item';
                 item.innerHTML = `
-                    <span>${key}</span>
-                    <div class="score-bar">
-                        <div class="score-fill" style="width: ${value}%"></div>
+                    <span class="cluster-name">
+                        ${clusterNames[cluster]}
+                        ${isCritical ? '<span class="warning-badge">Quan trọng</span>' : ''}
+                    </span>
+                    <div class="cluster-bar">
+                        <div class="cluster-fill" style="width: 0%; background: ${meetsThreshold ? 'linear-gradient(90deg, #667eea, #764ba2)' : 'linear-gradient(90deg, #dc3545, #ff6b6b)'}"></div>
                     </div>
+                    <span class="cluster-score" style="color: ${meetsThreshold ? '#667eea' : '#dc3545'}">${score.normalized}%</span>
                 `;
-                breakdown.appendChild(item);
+                clusterContainer.appendChild(item);
+                
+                // Animate bar fill
+                setTimeout(() => {
+                    item.querySelector('.cluster-fill').style.width = score.normalized + '%';
+                }, 100);
             });
+            
+            // DISC scores
+            const discContainer = document.getElementById('disc-scores');
+            discContainer.innerHTML = '';
+            
+            const discNames = {
+                D: 'Quyết đoán',
+                I: 'Ảnh hưởng',
+                S: 'Ổn định',
+                C: 'Tuân thủ'
+            };
+            
+            Object.entries(scores.disc).forEach(([key, value]) => {
+                const item = document.createElement('div');
+                item.className = 'disc-item';
+                item.innerHTML = `
+                    <div class="disc-letter">${key}</div>
+                    <div class="disc-value">${value}%</div>
+                    <small>${discNames[key]}</small>
+                `;
+                discContainer.appendChild(item);
+            });
+            
+            window.scrollTo(0, 0);
         }
         
+        // Download results
         function downloadResults() {
+            const scores = calculateScores();
+            const duration = document.getElementById('timer').textContent;
+            
             const results = {
-                timestamp: new Date().toISOString(),
-                duration: document.getElementById('timer').textContent,
-                responses: responses,
-                scores: calculateScores()
+                metadata: {
+                    version: 'WorkMatch v1.0',
+                    role: 'Trưởng phòng Phát triển Cộng đồng',
+                    timestamp: new Date().toISOString(),
+                    duration: duration,
+                    totalQuestions: 66
+                },
+                scores: {
+                    total: scores.total,
+                    status: scores.total >= 75 ? 'Xuất sắc' : scores.total >= 60 ? 'Tốt' : 'Cần xem xét',
+                    clusters: scores.clusters,
+                    workstyle: scores.disc
+                },
+                criticalClusters: {
+                    CreateValue: {
+                        score: scores.clusters.CreateValue.normalized,
+                        threshold: 70,
+                        passed: scores.clusters.CreateValue.normalized >= 70
+                    },
+                    Transparency_OKRs: {
+                        score: scores.clusters.Transparency_OKRs.normalized,
+                        threshold: 65,
+                        passed: scores.clusters.Transparency_OKRs.normalized >= 65
+                    },
+                    OthersFirst: {
+                        score: scores.clusters.OthersFirst.normalized,
+                        threshold: 65,
+                        passed: scores.clusters.OthersFirst.normalized >= 65
+                    }
+                },
+                responses: responses
             };
             
             const dataStr = JSON.stringify(results, null, 2);
             const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
             
-            const exportFileDefaultName = `workmatch_results_${Date.now()}.json`;
+            const exportFileDefaultName = `WorkMatch_Results_${Date.now()}.json`;
             
             const linkElement = document.createElement('a');
             linkElement.setAttribute('href', dataUri);
             linkElement.setAttribute('download', exportFileDefaultName);
             linkElement.click();
+            
+            alert('Kết quả đã được tải xuống thành công!');
         }
         
         // Initialize on load
         window.onload = init;
+    </script>
+</body>
+</html><!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WorkMatch Assessment - Đánh giá Văn hóa Doanh nghiệp</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            opacity: 0.9;
+            font-size: 1.1em;
+        }
+        
+        .progress-container {
+            background: rgba(255,255,255,0.2);
+            height: 8px;
+            border-radius: 4px;
+            margin-top: 20px;
+            overflow: hidden;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: white;
+            width: 0%;
+            transition: width 0.5s ease;
+            border-radius: 4px;
+        }
+        
+        .content {
+            padding: 40px 30px;
+        }
+        
+        .section {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+        
+        .section.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .section-title {
+            font-size: 1.8em;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        
+        .section-desc {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.05em;
+        }
+        
+        .question {
+            margin-bottom: 30px;
+            padding: 25px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            border-left: 4px solid #667eea;
+            transition: transform 0.3s ease;
+        }
+        
+        .question:hover {
+            transform: translateX(5px);
+        }
+        
+        .question-number {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            width: 30px;
+            height: 30px;
+            line-height: 30px;
+            text-align: center;
+            border-radius: 50%;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+        
+        .question-text {
+            font-size: 1.1em;
+            margin-bottom: 20px;
+            color: #333;
+            display: inline;
+        }
+        
+        /* Likert Scale Styles */
+        .likert-scale {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .likert-option {
+            text-align: center;
+        }
+        
+        .likert-option input[type="radio"] {
+            display: none;
+        }
+        
+        .likert-option label {
+            display: block;
+            padding: 12px 8px;
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            min-height: 80px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .likert-option label:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+        }
+        
+        .likert-option input[type="radio"]:checked + label {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: #667eea;
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        .likert-option label strong {
+            display: block;
+            font-size: 1.3em;
+            margin-bottom: 5px;
+        }
+        
+        .likert-option label small {
+            font-size: 0.85em;
+            opacity: 0.9;
+        }
+        
+        /* SJT Styles */
+        .sjt-scenario {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            font-style: italic;
+        }
+        
+        .sjt-options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .sjt-option {
+            position: relative;
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 15px 15px 15px 45px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .sjt-option:hover {
+            border-color: #667eea;
+            background: #f8f9ff;
+        }
+        
+        .sjt-option input[type="radio"] {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        
+        .sjt-option.selected {
+            background: #f0f4ff;
+            border-color: #667eea;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.2);
+        }
+        
+        .sjt-option-label {
+            font-weight: bold;
+            color: #667eea;
+            margin-right: 10px;
+        }
+        
+        /* Forced Choice Styles */
+        .forced-choice {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border: 2px solid #e9ecef;
+        }
+        
+        .forced-descriptors {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+            margin-bottom: 25px;
+        }
+        
+        .descriptor {
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            border: 2px solid #dee2e6;
+            transition: all 0.3s;
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .descriptor:hover {
+            transform: translateX(5px);
+        }
+        
+        .descriptor.most {
+            border-color: #28a745;
+            background: linear-gradient(to right, #d4edda, white);
+        }
+        
+        .descriptor.least {
+            border-color: #dc3545;
+            background: linear-gradient(to right, #f8d7da, white);
+        }
+        
+        .descriptor-label {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 30px;
+            height: 30px;
+            background: #667eea;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        
+        .descriptor-text {
+            margin-left: 50px;
+        }
+        
+        .forced-controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        .control-group {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            border: 2px solid #dee2e6;
+        }
+        
+        .control-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #495057;
+        }
+        
+        .control-group select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #dee2e6;
+            border-radius: 6px;
+            font-size: 1em;
+            background: white;
+            cursor: pointer;
+        }
+        
+        .control-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .control-group.most label {
+            color: #28a745;
+        }
+        
+        .control-group.least label {
+            color: #dc3545;
+        }
+        
+        /* Navigation */
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 2px solid #e0e0e0;
+        }
+        
+        .btn {
+            padding: 14px 35px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .btn-prev {
+            background: #e0e0e0;
+            color: #666;
+        }
+        
+        .btn-prev:hover:not(:disabled) {
+            background: #d0d0d0;
+        }
+        
+        .btn-next, .btn-submit {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+        }
+        
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        /* Start Screen */
+        .start-screen {
+            text-align: center;
+            padding: 40px;
+        }
+        
+        .start-screen h2 {
+            color: #667eea;
+            margin-bottom: 25px;
+            font-size: 2em;
+        }
+        
+        .start-screen p {
+            font-size: 1.1em;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .info-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .info-card-icon {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+        
+        .info-card-title {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        
+        .info-card-value {
+            color: #667eea;
+            font-size: 1.1em;
+        }
+        
+        /* Results */
+        .results {
+            display: none;
+            padding: 40px;
+            text-align: center;
+        }
+        
+        .results.show {
+            display: block;
+        }
+        
+        .score-circle {
+            width: 180px;
+            height: 180px;
+            margin: 0 auto 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 3.5em;
+            font-weight: bold;
+            box-shadow: 0 10px 40px rgba(102, 126, 234, 0.4);
+            position: relative;
+        }
+        
+        .score-circle::after {
+            content: '%';
+            position: absolute;
+            bottom: 45px;
+            right: 35px;
+            font-size: 0.4em;
+        }
+        
+        .score-label {
+            font-size: 1.8em;
+            color: #333;
+            margin-bottom: 15px;
+        }
+        
+        .score-message {
+            font-size: 1.2em;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        
+        .score-details {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 30px;
+            margin-top: 30px;
+            text-align: left;
+        }
+        
+        .score-details h3 {
+            color: #667eea;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 1.5em;
+        }
+        
+        .cluster-scores {
+            display: grid;
+            gap: 15px;
+        }
+        
+        .cluster-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .cluster-name {
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .cluster-bar {
+            flex: 1;
+            max-width: 200px;
+            height: 25px;
+            background: #e9ecef;
+            border-radius: 12px;
+            margin: 0 15px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .cluster-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            transition: width 1.5s ease;
+            border-radius: 12px;
+        }
+        
+        .cluster-score {
+            font-weight: bold;
+            color: #667eea;
+            min-width: 45px;
+            text-align: right;
+        }
+        
+        .workstyle-profile {
+            margin-top: 30px;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+        }
+        
+        .workstyle-title {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 15px;
+        }
+        
+        .disc-scores {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+        }
+        
+        .disc-item {
+            text-align: center;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .disc-letter {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+        
+        .disc-value {
+            font-size: 1.2em;
+            color: #333;
+        }
+        
+        /* Timer */
+        .timer {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            padding: 12px 24px;
+            border-radius: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            font-weight: bold;
+            color: #667eea;
+            font-size: 1.1em;
+            z-index: 1000;
+        }
+        
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .container {
+                margin: 0;
+                border-radius: 0;
+            }
+            
+            .header h1 {
+                font-size: 1.8em;
+            }
+            
+            .likert-scale {
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
+            
+            .likert-option label {
+                min-height: auto;
+                padding: 10px;
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+            }
+            
+            .likert-option label small {
+                display: inline;
+                margin-left: 10px;
+            }
+            
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .disc-scores {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .timer {
+                top: 10px;
+                right: 10px;
+                padding: 8px 16px;
+                font-size: 1em;
+            }
+        }
+        
+        /* Print Styles */
+        @media print {
+            body {
+                background: white;
+            }
+            
+            .container {
+                box-shadow: none;
+            }
+            
+            .navigation, .timer {
+                display: none;
+            }
+        }
+        
+        /* Loading State */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Warning Badge */
+        .warning-badge {
+            display: inline-block;
+            background: #ffc107;
+            color: #856404;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.85em;
+            margin-left: 10px;
+        }
+        
+        /* Success Message */
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid #28a745;
+        }
+    </style>
+</head>
+<body>
+    <div class="timer" id="timer">00:00</div>
+    
+    <div class="container">
+        <div class="header">
+            <h1>WorkMatch Assessment</h1>
+            <p>Đánh giá Văn hóa Doanh nghiệp - Vị trí: Trưởng phòng Phát triển Cộng đồng</p>
+            <div class="progress-container">
+                <div class="progress-bar" id="progress"></div>
+            </div>
+        </div>
+        
+        <div class="content">
+            <!-- Start Screen -->
+            <div class="section active" id="start-section">
+                <div class="start-screen">
+                    <h2>Chào mừng bạn đến với bài đánh giá WorkMatch!</h2>
+                    <p>Bài đánh giá này giúp chúng tôi hiểu rõ hơn về phong cách làm việc và mức độ phù hợp của bạn với văn hóa công ty.</p>
+                    
+                    <div class="info-grid">
+                        <div class="info-card">
+                            <div class="info-card-icon">⏱️</div>
+                            <div class="info-card-title">Thời gian</div>
+                            <div class="info-card-value">25-35 phút</div>
+                        </div>
+                        <div class="info-card">
+                            <div class="info-card-icon">📝</div>
+                            <div class="info-card-title">Số câu hỏi</div>
+                            <div class="info-card-value">66 câu</div>
+                        </div>
+                        <div class="info-card">
+                            <div class="info-card-icon">🎯</div>
+                            <div class="info-card-title">Phương thức</div>
+                            <div class="info-card-value">Trả lời trung thực</div>
+                        </div>
+                        <div class="info-card">
+                            <div class="info-card-icon">🔒</div>
+                            <div class="info-card-title">Bảo mật</div>
+                            <div class="info-card-value">100% An toàn</div>
+                        </div>
+                    </div>
+                    
+                    <p style="color: #666; margin-top: 20px;">
+                        <strong>Lưu ý:</strong> Không có câu trả lời đúng hay sai. Hãy chọn phương án phù hợp nhất với suy nghĩ và cách làm việc của bạn.
+                    </p>
+                    
+                    <button class="btn btn-next" onclick="startAssessment()" style="margin-top: 30px; padding: 18px 50px;">
+                        Bắt đầu làm bài
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Section A: Likert -->
+            <div class="section" id="section-a">
+                <h2 class="section-title">Phần A: Giá trị & Nguyên tắc làm việc</h2>
+                <p class="section-desc">Vui lòng cho biết mức độ đồng ý của bạn với mỗi phát biểu sau đây:</p>
+                <div id="likert-questions"></div>
+            </div>
+            
+            <!-- Section B: SJT -->
+            <div class="section" id="section-b">
+                <h2 class="section-title">Phần B: Tình huống thực tế</h2>
+                <p class="section-desc">Hãy chọn cách xử lý phù hợp nhất với bạn trong mỗi tình huống:</p>
+                <div id="sjt-questions"></div>
+            </div>
+            
+            <!-- Section C: Forced Choice -->
+            <div class="section" id="section-c">
+                <h2 class="section-title">Phần C: Phong cách làm việc</h2>
+                <p class="section-desc">Với mỗi nhóm mô tả dưới đây, vui lòng chọn 1 câu <strong>GIỐNG BẠN NHẤT</strong> và 1 câu <strong>ÍT GIỐNG BẠN NHẤT</strong>:</p>
+                <div id="forced-questions"></div>
+            </div>
+            
+            <!-- Results -->
+            <div class="results" id="results">
+                <div class="score-circle" id="total-score">0</div>
+                <div class="score-label">Điểm phù hợp văn hóa</div>
+                <p class="score-message" id="score-message"></p>
+                
+                <div class="score-details">
+                    <h3>Chi tiết đánh giá theo giá trị cốt lõi</h3>
+                    <div class="cluster-scores" id="cluster-scores"></div>
+                    
+                    <div class="workstyle-profile">
+                        <div class="workstyle-title">Phong cách làm việc (DISC Profile)</div>
+                        <div class="disc-scores" id="disc-scores"></div>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 30px;">
+                    <button class="btn btn-next" onclick="downloadResults()">📥 Tải xuống kết quả</button>
+                    <button class="btn btn-next" onclick="window.print()" style="margin-left: 10px;">🖨️ In báo cáo</button>
+                </div>
+            </div>
+            
+            <!-- Navigation -->
+            <div class="navigation" id="navigation" style="display: none;">
+                <button class="btn btn-prev" onclick="previousSection()" id="btn-prev">← Quay lại</button>
+                <button class="btn btn-next" onclick="nextSection()" id="btn-next">Tiếp theo →</button>
+                <button class="btn btn-submit" onclick="submitAssessment()" id="btn-submit" style="display: none;">
+                    Nộp bài đánh giá
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Complete WorkMatch Assessment Data
+        const assessmentData = {
+            likertQuestions: [
+                {id: "A01", text: "Khi team đã thống nhất phương án, tôi thực hiện theo dù có ý tưởng khác", cluster: "RespectConsensus", reverse: false},
+                {id: "A02", text: "Tôi thường tìm cách biến các hoạt động thường ngày thành cơ hội tạo giá trị mới", cluster: "CreateValue", reverse: false},
+                {id: "A03", text: "Tôi ưu tiên hỗ trợ đồng nghiệp ngay cả khi đang bận việc riêng", cluster: "OthersFirst", reverse: false},
+                {id: "A04", text: "Tôi chủ động tìm kiếm ý kiến trái chiều trước khi ra quyết định", cluster: "MultiPerspective", reverse: false},
+                {id: "A05", text: "Tôi tin rằng chia sẻ kiến thức sẽ nhận lại được nhiều hơn", cluster: "GiveToReceive", reverse: false},
+                {id: "A06", text: "Tôi thoải mái công khai tiến độ và kết quả công việc với cả team", cluster: "Transparency_OKRs", reverse: false},
+                {id: "A07", text: "Tôi cố gắng tạo không khí vui vẻ ngay cả khi công việc căng thẳng", cluster: "FunAtWork", reverse: false},
+                {id: "A08", text: "Tôi làm việc hiệu quả dù không ở văn phòng", cluster: "WorkFromAnywhere", reverse: false},
+                {id: "A09", text: "Khi phản biện, tôi luôn đưa ra giải pháp thay thế", cluster: "ConstructiveDebate", reverse: false},
+                {id: "A10", text: "Tôi thích làm theo cách riêng hơn là tuân thủ quy trình chung", cluster: "RespectConsensus", reverse: true},
+                {id: "A11", text: "Tôi chủ động đề xuất cải tiến thay vì chỉ làm theo yêu cầu", cluster: "CreateValue", reverse: false},
+                {id: "A12", text: "Tôi thường nghĩ đến lợi ích của mình trước khi xem xét người khác", cluster: "OthersFirst", reverse: true},
+                {id: "A13", text: "Tôi thấy khó chịu khi phải xem xét nhiều góc nhìn khác nhau", cluster: "MultiPerspective", reverse: true},
+                {id: "A14", text: "Tôi giữ kín bí quyết thành công để duy trì lợi thế cạnh tranh", cluster: "GiveToReceive", reverse: true},
+                {id: "A15", text: "Tôi không thoải mái khi phải báo cáo chi tiết tiến độ công việc", cluster: "Transparency_OKRs", reverse: true},
+                {id: "A16", text: "Công việc là công việc, không nhất thiết phải vui vẻ", cluster: "FunAtWork", reverse: true},
+                {id: "A17", text: "Tôi cần sự giám sát trực tiếp để làm việc hiệu quả", cluster: "WorkFromAnywhere", reverse: true},
+                {id: "A18", text: "Tôi tránh đưa ra ý kiến trái chiều để giữ hòa khí", cluster: "ConstructiveDebate", reverse: true},
+                {id: "A19", text: "Tôi sẵn sàng điều chỉnh kế hoạch cá nhân khi team cần", cluster: "RespectConsensus", reverse: false},
+                {id: "A20", text: "Tôi tìm kiếm cơ hội học hỏi trong mọi tình huống", cluster: "CreateValue", reverse: false},
+                {id: "A21", text: "Tôi chủ động hỏi thăm và hỗ trợ khi thấy đồng nghiệp gặp khó khăn", cluster: "OthersFirst", reverse: false},
+                {id: "A22",
